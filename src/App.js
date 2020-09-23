@@ -1,26 +1,51 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, {useEffect, useState} from 'react';
+import ThemeContext from './ThemeContext';
+import Part2 from './part2';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+    const [values, changeValues] = useState([]);
+
+    const [show, changeShow] = useState(false);
+
+    useEffect(() => {
+
+    async function fetchMyAPI() {
+        let response = await fetch(`https://jsonplaceholder.typicode.com/posts`);
+        response = await response.json()
+        changeValues(() => response);
+    }
+
+    fetchMyAPI()
+
+    changeShow(true);
+
+    }, [])
+
+
+    const loadSomething = () => {
+        async function fetchMyAPI() {
+            let response = await fetch(`https://jsonplaceholder.typicode.com/albums`);
+            response = await response.json()
+            changeValues(values.concat(response));
+        }
+
+        fetchMyAPI()
+    }
+
+    return (
+
+        <ThemeContext.Provider value={values}>
+            <button onClick={loadSomething}>load something</button>
+            {
+            show && (
+                <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Aut veniam optio a aliquam. Harum repudiandae maxime voluptates tenetur quas culpa?</p>
+            )
+            }
+
+            <Part2 />
+        </ThemeContext.Provider>
+    );
 }
 
 export default App;
